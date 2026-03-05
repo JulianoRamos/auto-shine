@@ -1,66 +1,56 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import { HStack, Link as ChakraLink, Text, Icon, Button, VStack, Image as ChakraImage } from "@chakra-ui/react";
+import NextLink from "next/link";
+import { LuCar } from "react-icons/lu";
+
+import heroCar from "../../public/assets/hero-car.jpg";
+import NextImage from "next/image";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <>
+      <HStack as="header" position="fixed" left={0} right={0} top={0} zIndex={50} bg="whiteAlpha.600/90">
+        <HStack as="nav" w="full" alignItems="center" justify="space-between" px={6} py={4}>
+          <ChakraLink alignItems="center" gap={2} asChild>
+            <NextLink href="/">
+              <Icon w={7} h={7}>
+                <LuCar />
+              </Icon>
+
+              <Text fontSize="xl" fontWeight="bold">AutoShine</Text>
+            </NextLink>
+          </ChakraLink>
+
+          <HStack alignItems="center" gap={8}>
+            <ChakraLink asChild>
+              <NextLink href="/">
+                Inicio
+              </NextLink>
+            </ChakraLink>
+
+            <ChakraLink asChild>
+              <NextLink href="#servicos">
+                Serviços
+              </NextLink>
+            </ChakraLink>
+
+            <ChakraLink asChild>
+              <NextLink href="/agendar">
+                Agendar
+              </NextLink>
+            </ChakraLink>
+
+            <Button variant="outline" rounded="lg">Acessar</Button>
+          </HStack>
+        </HStack>
+      </HStack>
+
+      <VStack as="main" gap={0}>
+        <VStack as="section">
+          <ChakraImage w="100vw" h="100vh" asChild>
+            <NextImage src={heroCar} alt="AutoShine" />
+          </ChakraImage>
+        </VStack>
+      </VStack>
+    </>
   );
 }
