@@ -25,7 +25,7 @@ export function Header() {
           </ChakraLink>
 
           <ChakraLink asChild>
-            <NextLink href="#servicos">
+            <NextLink href="/#servicos">
               Serviços
             </NextLink>
           </ChakraLink>
