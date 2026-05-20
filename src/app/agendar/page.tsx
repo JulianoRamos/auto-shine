@@ -1,12 +1,16 @@
 "use client"
 
-import { Button, DatePicker, Field, Heading, HStack, Portal, RadioCard, Separator, Steps, Text, useSteps, VStack } from "@chakra-ui/react";
+import { Button, DatePicker, Field, Heading, HStack, Input, parseDate, Portal, RadioCard, Separator, SimpleGrid, Steps, Text, useSteps, VStack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { LuArrowLeft, LuCalendar } from "react-icons/lu";
 
 import { motion } from "motion/react";
 import { ServiceCardItem } from "@/components/ui/service-card-item";
 import { useState } from "react";
+
+import { dayjs } from "@/lib/dayjs";
+
+type Date = { year: number, month: number, day: number }
 
 export default function Agendar() {
   const steps = useSteps({
@@ -25,6 +29,24 @@ export default function Agendar() {
   }
 
   const [value, setValue] = useState<string | null>(null)
+  const [selectHour, setSelectHour] = useState<string | null>(null);
+
+  const avalibleHours = ["8", "9", "10", "11", "13", "14", "15", "16", "17"];
+
+  const isDateUnavailable = (date: Date) => {
+    const selectedDate = dayjs
+      .tz(`${date.year}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`,
+        "America/Sao_Paulo",
+      )
+      .startOf("day");
+
+    const today = dayjs.tz(undefined, "America/Sao_Paulo").startOf("day");
+
+    const isPastDate = selectedDate.isBefore(today, "day");
+    const isSunday = selectedDate.day() === 0;
+
+    return isPastDate || isSunday;
+  }
 
   return (
     <VStack as="main" gap={0}>
@@ -72,21 +94,27 @@ export default function Agendar() {
                   <Heading as="h2" fontSize="2xl" fontWeight="semibold" color="yellow.300" mb={4}>Data e Horário</Heading>
 
                   <Field.Root>
-                    <Field.Label>Data</Field.Label>
+                    <Field.Label color="yellow.300">Data</Field.Label>
                     <Field.Context>
                       {(ctx) => (
                         <DatePicker.Root
                           invalid={ctx.invalid}
                           ids={{ label: () => ctx.ids.label, input: () => ctx.ids.control }}
+                          locale="pt-BR"
+                          timeZone="America/Sao_Paulo"
+                          size="lg"
+                          defaultValue={[parseDate(new Date())]}
+                          isDateUnavailable={isDateUnavailable}
                         >
                           <DatePicker.Control>
-                            <DatePicker.Input />
                             <DatePicker.IndicatorGroup>
                               <DatePicker.Trigger>
                                 <LuCalendar />
                               </DatePicker.Trigger>
                             </DatePicker.IndicatorGroup>
+                            <DatePicker.Input rounded="lg" />
                           </DatePicker.Control>
+
                           <Portal>
                             <DatePicker.Positioner>
                               <DatePicker.Content>
@@ -110,6 +138,38 @@ export default function Agendar() {
                     </Field.Context>
                     <Field.ErrorText>Date of birth is required</Field.ErrorText>
                   </Field.Root>
+
+                  <Field.Root mt={5}>
+                    <Field.Label color="yellow.300">Horário</Field.Label>
+
+                    <RadioCard.Root
+                      value={selectHour}
+                      onValueChange={(e) => setSelectHour(e.value)}
+                      orientation="horizontal"
+                      colorPalette="yellow"
+                      variant="outline"
+                      size="lg"
+                    >
+                      <HStack gap={3} flexWrap="wrap">
+                        {avalibleHours.map((hour) => (
+                          <RadioCard.Item key={hour} value={hour} w="auto" rounded="lg">
+                            <RadioCard.ItemHiddenInput />
+
+                            <RadioCard.ItemControl
+                              px={5}
+                              py={3}
+                              minW={20}
+                              justifyContent="center"
+                            >
+                              <RadioCard.ItemText>
+                                {hour}:00
+                              </RadioCard.ItemText>
+                            </RadioCard.ItemControl>
+                          </RadioCard.Item>
+                        ))}
+                      </HStack>
+                    </RadioCard.Root>
+                  </Field.Root>
                 </motion.div>
               )}
 
@@ -117,7 +177,31 @@ export default function Agendar() {
                 <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
                   <Heading as="h2" fontSize="2xl" fontWeight="semibold" color="yellow.300" mb={4}>Seus Dados</Heading>
 
+                  <SimpleGrid columns={2} gap={4}>
+                    <Field.Root>
+                      <Field.Label color="yellow.300">Nome completo</Field.Label>
 
+                      <Input colorPalette="yellow" size="lg" rounded="lg" />
+                    </Field.Root>
+
+                    <Field.Root>
+                      <Field.Label color="yellow.300">Telefone</Field.Label>
+
+                      <Input colorPalette="yellow" size="lg" rounded="lg" />
+                    </Field.Root>
+
+                    <Field.Root>
+                      <Field.Label color="yellow.300">Modelo do carro</Field.Label>
+
+                      <Input colorPalette="yellow" size="lg" rounded="lg" />
+                    </Field.Root>
+
+                    <Field.Root>
+                      <Field.Label color="yellow.300">Placa</Field.Label>
+
+                      <Input colorPalette="yellow" size="lg" rounded="lg" />
+                    </Field.Root>
+                  </SimpleGrid>
                 </motion.div>
               )}
             </Steps.Content>
@@ -132,7 +216,7 @@ export default function Agendar() {
           </HStack>
         </Steps.RootProvider>
       </VStack>
-    </VStack>
+    </VStack >
   )
 }
 
